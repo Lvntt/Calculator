@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="defaultButtonWidth">80dp</dimen>
+    <dimen name="defaultButtonHeight">80dp</dimen>
+    <dimen name="largeButtonWidth">176dp</dimen>
+    <dimen name="defaultButtonMargin">16dp</dimen>
+    <dimen name="defaultDividerMargin">16dp</dimen>
+    <dimen name="defaultButtonTextSize">28sp</dimen>
+    <dimen name="eraseButtonMarginEnd">28dp</dimen>
+    <dimen name="eraseButtonMarginBottom">32dp</dimen>
+    <dimen name="dividerInset">16dp</dimen>
+    <dimen name="expressionTextSize">57sp</dimen>
+    <dimen name="defaultTextViewMargin">16dp</dimen>
+    <dimen name="expressionTextViewMarginBottom">90dp</dimen>
+    <dimen name="titleTextSize">32sp</dimen>
+</resources>

@@ -4,15 +4,205 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/black">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello, world!"
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/largeButtonStyle"
+        android:id="@+id/zeroDigitButton"
+        android:text="@string/zero"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/commaButton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/commaButton"
+        android:text="@string/comma"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/zeroDigitButton"
+        app:layout_constraintEnd_toStartOf="@id/equalButton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/accentedButtonStyle"
+        android:id="@+id/equalButton"
+        android:text="@string/equality"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/commaButton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/oneDigitButton"
+        android:text="@string/one"
+        app:layout_constraintBottom_toTopOf="@id/zeroDigitButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@id/twoDigitButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/twoDigitButton"
+        android:text="@string/two"
+        app:layout_constraintBottom_toTopOf="@id/zeroDigitButton"
+        app:layout_constraintStart_toEndOf="@id/oneDigitButton"
+        app:layout_constraintEnd_toStartOf="@id/threeDigitButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/threeDigitButton"
+        android:text="@string/three"
+        app:layout_constraintBottom_toTopOf="@id/commaButton"
+        app:layout_constraintStart_toEndOf="@id/twoDigitButton"
+        app:layout_constraintEnd_toStartOf="@id/sumButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/accentedButtonStyle"
+        android:id="@+id/sumButton"
+        android:text="@string/sum"
+        app:layout_constraintBottom_toTopOf="@id/equalButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/threeDigitButton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/fourDigitButton"
+        android:text="@string/four"
+        app:layout_constraintBottom_toTopOf="@id/oneDigitButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fiveDigitButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/fiveDigitButton"
+        android:text="@string/five"
+        app:layout_constraintBottom_toTopOf="@id/twoDigitButton"
+        app:layout_constraintStart_toEndOf="@id/fourDigitButton"
+        app:layout_constraintEnd_toStartOf="@id/sixDigitButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/sixDigitButton"
+        android:text="@string/six"
+        app:layout_constraintBottom_toTopOf="@id/threeDigitButton"
+        app:layout_constraintStart_toEndOf="@id/fiveDigitButton"
+        app:layout_constraintEnd_toStartOf="@id/subtractionButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/accentedButtonStyle"
+        android:id="@+id/subtractionButton"
+        android:text="@string/subtraction"
+        app:layout_constraintBottom_toTopOf="@id/sumButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sixDigitButton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/sevenDigitButton"
+        android:text="@string/seven"
+        app:layout_constraintBottom_toTopOf="@id/fourDigitButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/eightDigitButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/eightDigitButton"
+        android:text="@string/eight"
+        app:layout_constraintBottom_toTopOf="@id/fiveDigitButton"
+        app:layout_constraintStart_toEndOf="@id/sevenDigitButton"
+        app:layout_constraintEnd_toStartOf="@id/nineDigitButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/nineDigitButton"
+        android:text="@string/nine"
+        app:layout_constraintBottom_toTopOf="@id/sixDigitButton"
+        app:layout_constraintStart_toEndOf="@id/eightDigitButton"
+        app:layout_constraintEnd_toStartOf="@id/multiplicationButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/accentedButtonStyle"
+        android:id="@+id/multiplicationButton"
+        android:text="@string/multiplication"
+        app:layout_constraintBottom_toTopOf="@id/subtractionButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/nineDigitButton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/cancelButton"
+        android:text="@string/AC"
+        app:layout_constraintBottom_toTopOf="@id/sevenDigitButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/changeSignButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/changeSignButton"
+        android:text="@string/plusMinus"
+        app:layout_constraintBottom_toTopOf="@+id/eightDigitButton"
+        app:layout_constraintStart_toEndOf="@+id/cancelButton"
+        app:layout_constraintEnd_toStartOf="@id/percentButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/defaultButtonStyle"
+        android:id="@+id/percentButton"
+        android:text="@string/percent"
+        app:layout_constraintBottom_toTopOf="@+id/nineDigitButton"
+        app:layout_constraintStart_toEndOf="@+id/changeSignButton"
+        app:layout_constraintEnd_toStartOf="@id/divisionButton"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/accentedButtonStyle"
+        android:id="@+id/divisionButton"
+        android:text="@string/division"
+        app:layout_constraintBottom_toTopOf="@+id/multiplicationButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/percentButton" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/materialDivider"
+        app:dividerInsetStart="@dimen/dividerInset"
+        app:dividerInsetEnd="@dimen/dividerInset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/defaultDividerMargin"
+        app:dividerColor="@color/dividerColor"
+        app:layout_constraintBottom_toTopOf="@id/cancelButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/eraseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/erase"
+        app:layout_constraintBottom_toTopOf="@+id/materialDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/eraseButtonMarginEnd"
+        android:layout_marginBottom="@dimen/eraseButtonMarginBottom"/>
+
+    <TextView
+        style="@style/titleTextViewStyle"
+        android:id="@+id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/appName"/>
+
+    <TextView
+        style="@style/expressionTextViewStyle"
+        android:id="@+id/expression"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toTopOf="@id/materialDivider"
+        tools:text="Google"/>
+    
+    <TextView
+        style="@style/errorTextViewStyle"
+        android:id="@+id/error"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toTopOf="@id/materialDivider"
+        tools:text="Error"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

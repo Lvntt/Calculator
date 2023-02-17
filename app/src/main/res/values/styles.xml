@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="defaultButtonStyle">
+        <item name="android:background">@drawable/button_shape</item>
+        <item name="android:backgroundTint">@color/primaryBackgroundButtonColor</item>
+        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="android:textSize">@dimen/defaultButtonTextSize</item>
+        <item name="android:textColor">@color/primaryButtonTextColor</item>
+        <item name="android:layout_width">@dimen/defaultButtonWidth</item>
+        <item name="android:layout_height">@dimen/defaultButtonHeight</item>
+        <item name="android:layout_marginStart">@dimen/defaultButtonMargin</item>
+        <item name="android:layout_marginBottom">@dimen/defaultButtonMargin</item>
+    </style>
+
+    <style name="largeButtonStyle">
+        <item name="android:background">@drawable/button_shape</item>
+        <item name="android:backgroundTint">@color/primaryBackgroundButtonColor</item>
+        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="android:textSize">@dimen/defaultButtonTextSize</item>
+        <item name="android:textColor">@color/primaryButtonTextColor</item>
+        <item name="android:layout_width">@dimen/largeButtonWidth</item>
+        <item name="android:layout_height">@dimen/defaultButtonHeight</item>
+        <item name="android:layout_marginStart">@dimen/defaultButtonMargin</item>
+        <item name="android:layout_marginBottom">@dimen/defaultButtonMargin</item>
+    </style>
+
+    <style name="accentedButtonStyle">
+        <item name="android:background">@drawable/button_shape</item>
+        <item name="android:backgroundTint">@color/secondaryBackgroundButtonColor</item>
+        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="android:textSize">@dimen/defaultButtonTextSize</item>
+        <item name="android:textColor">@color/secondaryButtonTextColor</item>
+        <item name="android:layout_width">@dimen/defaultButtonWidth</item>
+        <item name="android:layout_height">@dimen/defaultButtonHeight</item>
+        <item name="android:layout_marginHorizontal">@dimen/defaultButtonMargin</item>
+        <item name="android:layout_marginBottom">@dimen/defaultButtonMargin</item>
+    </style>
+
+    <style name="expressionTextViewStyle">
+        <item name="android:textSize">@dimen/expressionTextSize</item>
+        <item name="android:textColor">@color/expressionTextColor</item>
+        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="android:layout_marginStart">@dimen/defaultTextViewMargin</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="titleTextViewStyle">
+        <item name="android:textSize">@dimen/titleTextSize</item>
+        <item name="android:textColor">@color/titleTextColor</item>
+        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="android:layout_marginStart">@dimen/defaultTextViewMargin</item>
+        <item name="android:layout_marginTop">@dimen/defaultTextViewMargin</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="errorTextViewStyle">
+        <item name="android:textSize">@dimen/expressionTextSize</item>
+        <item name="android:textColor">@color/errorTextColor</item>
+        <item name="android:fontFamily">@font/google_sans</item>
+        <item name="android:layout_marginStart">@dimen/defaultTextViewMargin</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+</resources>
