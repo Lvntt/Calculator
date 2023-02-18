@@ -129,7 +129,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/defaultButtonStyle"
-        android:id="@+id/cancelButton"
+        android:id="@+id/eraseExpressionButton"
         android:text="@string/AC"
         app:layout_constraintBottom_toTopOf="@id/sevenDigitButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,7 +140,7 @@
         android:id="@+id/changeSignButton"
         android:text="@string/plusMinus"
         app:layout_constraintBottom_toTopOf="@+id/eightDigitButton"
-        app:layout_constraintStart_toEndOf="@+id/cancelButton"
+        app:layout_constraintStart_toEndOf="@+id/eraseExpressionButton"
         app:layout_constraintEnd_toStartOf="@id/percentButton"/>
 
     <androidx.appcompat.widget.AppCompatButton
@@ -167,7 +167,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/defaultDividerMargin"
         app:dividerColor="@color/dividerColor"
-        app:layout_constraintBottom_toTopOf="@id/cancelButton"
+        app:layout_constraintBottom_toTopOf="@id/eraseExpressionButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -191,6 +191,7 @@
     <TextView
         style="@style/expressionTextViewStyle"
         android:id="@+id/expression"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toTopOf="@id/materialDivider"
@@ -203,6 +204,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toTopOf="@id/materialDivider"
-        tools:text="Error"/>
+        android:text="@string/error" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
