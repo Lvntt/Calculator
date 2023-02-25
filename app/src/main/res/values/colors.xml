@@ -7,12 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primaryBackgroundButtonColor">#4A4458</color>
-    <color name="secondaryBackgroundButtonColor">#633B48</color>
-    <color name="primaryButtonTextColor">#E8DEF8</color>
-    <color name="secondaryButtonTextColor">#FFD8E4</color>
-    <color name="dividerColor">#49454F</color>
-    <color name="expressionTextColor">#D0BCFF</color>
-    <color name="titleTextColor">#E6E1E5</color>
-    <color name="errorTextColor">#F2B8B5</color>
+    <color name="MAD.sys.dark.secondary_container">#4A4458</color>
+    <color name="MAD.sys.dark.tertiary_container">#633B48</color>
+    <color name="MAD.sys.dark.on_secondary_container">#E8DEF8</color>
+    <color name="MAD.sys.dark.on_tertiary_container">#FFD8E4</color>
+    <color name="MAD.sys.dark.outline_variant">#49454F</color>
+    <color name="MAD.sys.dark.primary">#D0BCFF</color>
+    <color name="MAD.sys.dark.on_background">#E6E1E5</color>
+    <color name="MAD.sys.dark.error">#F2B8B5</color>
 </resources>
