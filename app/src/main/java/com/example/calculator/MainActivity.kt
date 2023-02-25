@@ -3,25 +3,30 @@ package com.example.calculator
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.example.calculator.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val calculator = Calculator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         window.navigationBarColor = getColor(R.color.black)
+
+        val expressionObserver = Observer<String> { expression ->
+            updateUi(expression)
+        }
+
+        calculator.currentExpression.observe(this, expressionObserver)
+
         setupOnClickListeners()
     }
 
-    private fun updateUi() {
-        val currentExpression = calculator.getCurrentExpression()
-
+    private fun updateUi(currentExpression: String) {
         if (currentExpression != Calculator.ERROR_MESSAGE) {
             binding.expression.visibility = View.VISIBLE
             binding.error.visibility = View.GONE
@@ -34,84 +39,68 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupOnClickListeners() {
         binding.zeroDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.zeroDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.ZERO)
         }
         binding.oneDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.oneDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.ONE)
         }
         binding.twoDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.twoDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.TWO)
         }
         binding.threeDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.threeDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.THREE)
         }
         binding.fourDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.fourDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.FOUR)
         }
         binding.fiveDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.fiveDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.FIVE)
         }
         binding.sixDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.sixDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.SIX)
         }
         binding.sevenDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.sevenDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.SEVEN)
         }
         binding.eightDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.eightDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.EIGHT)
         }
         binding.nineDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.nineDigitButton.text.toString())
-            updateUi()
+            calculator.handleDigitClick(Digit.NINE)
         }
-        binding.commaButton.setOnClickListener {
-            calculator.handlePunctuationClick(binding.commaButton.text.toString())
-            updateUi()
-        }
-        binding.sumButton.setOnClickListener {
-            calculator.handleOperationClick(binding.sumButton.text.toString())
-            updateUi()
+        binding.additionButton.setOnClickListener {
+            calculator.handleOperationClick(Operations.ADDITION)
         }
         binding.subtractionButton.setOnClickListener {
-            calculator.handleOperationClick(binding.subtractionButton.text.toString())
-            updateUi()
+            calculator.handleOperationClick(Operations.SUBTRACTION)
         }
         binding.multiplicationButton.setOnClickListener {
-            calculator.handleOperationClick(binding.multiplicationButton.text.toString())
-            updateUi()
+            calculator.handleOperationClick(Operations.MULTIPLICATION)
         }
         binding.divisionButton.setOnClickListener {
-            calculator.handleOperationClick(binding.divisionButton.text.toString())
-            updateUi()
+            calculator.handleOperationClick(Operations.DIVISION)
+        }
+        binding.commaButton.setOnClickListener {
+            calculator.handlePunctuationClick(COMMA)
         }
         binding.changeSignButton.setOnClickListener {
             calculator.changeSign()
-            updateUi()
         }
         binding.eraseButton.setOnClickListener {
             calculator.handleEraseButton()
-            updateUi()
         }
         binding.eraseExpressionButton.setOnClickListener {
             calculator.eraseExpression()
-            updateUi()
         }
         binding.percentButton.setOnClickListener {
             calculator.calculatePercent()
-            updateUi()
         }
         binding.equalButton.setOnClickListener {
             calculator.calculateResult()
-            updateUi()
         }
+    }
+
+    companion object {
+        private const val COMMA = ","
     }
 }
