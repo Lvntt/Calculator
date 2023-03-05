@@ -1,0 +1,199 @@
+package com.example.calculator.model
+
+import android.util.Log
+import com.example.calculator.data.CalculatorButton
+import java.math.BigDecimal
+import java.math.RoundingMode
+
+class CalculatorModel {
+
+    private var currentExpression = EMPTY_STRING
+
+    private var canResetExpression = false
+    private val operationSigns = listOf(
+        CalculatorButton.ADDITION.value[0],
+        CalculatorButton.SUBTRACTION.value[0],
+        CalculatorButton.DIVISION.value[0],
+        CalculatorButton.MULTIPLICATION.value[0]
+    )
+
+    private fun expressionIsValid(): Boolean {
+        return currentExpression.isNotEmpty() && currentExpression != ERROR_MESSAGE
+    }
+
+    private fun expressionCanBeCalculated(): Boolean = currentExpression.contains(
+        Regex(
+            OPERATIONS_GROUP
+        )
+    )
+
+    private fun operationSignCanBeReplaced(): Boolean {
+        val lastSymbol = currentExpression.last()
+        return expressionIsValid() && currentExpression.lastIndex != 0 && lastSymbol in operationSigns
+    }
+
+    private fun operationSignCanBeInserted(): Boolean {
+        val lastSymbol = currentExpression.last()
+        return expressionIsValid() && !expressionHasOperationSigns() && lastSymbol != COMMA[0] && lastSymbol !in operationSigns
+    }
+
+    // using substring(1) to ignore possible minus prefix
+    private fun expressionHasOperationSigns(): Boolean {
+        return currentExpression.substring(1).any { it in operationSigns }
+    }
+
+    // discards the fractional part if it equals 0
+    private fun processFractionalPart(number: Double): String {
+        return if (BigDecimal.valueOf(number) % (BigDecimal.valueOf(1.0)) == BigDecimal.valueOf(0.0)) {
+            number.toInt().toString().replace(DOT, COMMA)
+        } else {
+            number.toString().replace(DOT, COMMA)
+        }
+    }
+
+    fun handleDigitClick(digit: String): String {
+        if (canResetExpression) {
+            eraseExpression()
+            canResetExpression = false
+        }
+        currentExpression += digit
+        return currentExpression
+    }
+
+    fun handlePunctuationClick(punctuationSign: String): String {
+        if (!expressionIsValid() || currentExpression.isEmpty()) return currentExpression
+
+        val lastSymbol = currentExpression.last()
+
+        if (currentExpression.contains(punctuationSign) && lastSymbol !in operationSigns) {
+            val operationSignIndex =
+                currentExpression.substring(1).indexOfAny(operationSigns.toCharArray())
+            val expressionAfterOperationSign = currentExpression.substring(operationSignIndex + 1)
+            val punctuationSignCanBeInserted =
+                !expressionAfterOperationSign.contains(punctuationSign)
+
+            if (expressionHasOperationSigns() && punctuationSignCanBeInserted) {
+                canResetExpression = false
+                currentExpression += punctuationSign
+            }
+        } else if (lastSymbol !in operationSigns) {
+            canResetExpression = false
+            currentExpression += punctuationSign
+        }
+
+        return currentExpression
+    }
+
+    fun handleOperationClick(operation: String): String {
+        if (currentExpression.isEmpty()) return currentExpression
+        if (operationSignCanBeReplaced()) {
+            val chars = currentExpression.toCharArray()
+            chars[chars.lastIndex] = operation[0]
+            currentExpression = chars.joinToString(EMPTY_STRING)
+            canResetExpression = false
+        } else if (operationSignCanBeInserted()) {
+            currentExpression += operation
+            canResetExpression = false
+        }
+        return currentExpression
+    }
+
+    fun calculatePercent(): String {
+        if (expressionCanBeCalculated()) {
+            calculateResult()
+        }
+
+        if (!expressionIsValid() || currentExpression.isEmpty() || currentExpression.last() in operationSigns) {
+            return currentExpression
+        }
+
+        val result = currentExpression.replace(COMMA, DOT).toDouble().toBigDecimal().divide(
+            BigDecimal.valueOf(100.0)
+        )
+        currentExpression = processFractionalPart(result.toDouble())
+        canResetExpression = true
+
+        return currentExpression
+    }
+
+    fun changeSign(): String {
+        if (!expressionIsValid()) {
+            return currentExpression
+        }
+        currentExpression = if (currentExpression.startsWith(MINUS)) {
+            currentExpression.removePrefix(MINUS)
+        } else {
+            currentExpression.replaceRange(0, 0, MINUS)
+        }
+        return currentExpression
+    }
+
+    fun eraseSymbol(): String {
+        if (canResetExpression) {
+            eraseExpression()
+            canResetExpression = false
+        } else if (currentExpression.isNotEmpty()) {
+            currentExpression = currentExpression.substring(0, currentExpression.lastIndex)
+        }
+        return currentExpression
+    }
+
+    fun eraseExpression(): String {
+        currentExpression = EMPTY_STRING
+        return currentExpression
+    }
+
+    fun calculateResult(): String {
+        try {
+            val match = Regex(EXPRESSION_REGEX).find(currentExpression)
+            if (match == null) {
+                Log.d(TAG, NULL_MATCH_MESSAGE)
+                return currentExpression
+            }
+            val (leftOperand, operation, rightOperand) = match.destructured
+            val firstNumber = leftOperand.replace(COMMA, DOT).toDouble().toBigDecimal()
+            val secondNumber = rightOperand.replace(COMMA, DOT).toDouble().toBigDecimal()
+            var result: BigDecimal = BigDecimal.valueOf(0.0)
+
+            when (operation) {
+                CalculatorButton.SUBTRACTION.value -> result = firstNumber - secondNumber
+                CalculatorButton.ADDITION.value -> result = firstNumber + secondNumber
+                CalculatorButton.MULTIPLICATION.value -> result = firstNumber * secondNumber
+                CalculatorButton.DIVISION.value -> {
+                    if (secondNumber == BigDecimal.valueOf(0.0)) {
+                        currentExpression = ERROR_MESSAGE
+                        canResetExpression = true
+                        return currentExpression
+                    } else {
+                        result = firstNumber.divide(secondNumber, 9, RoundingMode.HALF_UP)
+                    }
+                }
+            }
+            currentExpression = processFractionalPart(result.toDouble())
+            canResetExpression = true
+
+        } catch (e: Exception) {
+            Log.d(TAG, e.toString())
+        }
+
+        return currentExpression
+    }
+
+    companion object {
+        private const val TAG = "CALCULATOR"
+        private const val NULL_MATCH_MESSAGE = "Regex match is null"
+        private const val NUMBER = "\\d+"
+        private const val OPTIONAL_MINUS = "-?"
+        private const val OPTIONAL_FRACTIONAL_PART = "(?:[,.]$NUMBER)?"
+        private const val FIRST_OPERAND_GROUP = "($OPTIONAL_MINUS$NUMBER$OPTIONAL_FRACTIONAL_PART)"
+        private const val SECOND_OPERAND_GROUP = "($OPTIONAL_MINUS$NUMBER$OPTIONAL_FRACTIONAL_PART)"
+        private const val OPERATIONS_GROUP = "([-+×÷])"
+        private const val EXPRESSION_REGEX =
+            "$FIRST_OPERAND_GROUP$OPERATIONS_GROUP$SECOND_OPERAND_GROUP"
+        private const val EMPTY_STRING = ""
+        private const val MINUS = "-"
+        private const val COMMA = ","
+        private const val DOT = "."
+        const val ERROR_MESSAGE = "Error"
+    }
+}
