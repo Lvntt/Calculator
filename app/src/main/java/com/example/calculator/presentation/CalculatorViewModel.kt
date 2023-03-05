@@ -6,6 +6,11 @@ import com.example.calculator.data.CalculatorButton
 import com.example.calculator.model.CalculatorModel
 
 class CalculatorViewModel : ViewModel() {
+
+    private val _state = mutableStateOf<CalculatorUiState>(CalculatorUiState.Initial)
+    val state: CalculatorUiState
+        get() = _state.value
+
     private val _currentExpression = mutableStateOf(EMPTY_STRING)
     val currentExpression: String
         get() = _currentExpression.value
@@ -13,6 +18,8 @@ class CalculatorViewModel : ViewModel() {
     private val calculatorModel = CalculatorModel()
 
     fun handleButtonClick(button: CalculatorButton) {
+        _state.value = CalculatorUiState.Input
+
         when (button) {
             CalculatorButton.ADDITION,
             CalculatorButton.SUBTRACTION,
@@ -27,14 +34,26 @@ class CalculatorViewModel : ViewModel() {
             CalculatorButton.COMMA -> {
                 _currentExpression.value = calculatorModel.handlePunctuationClick(button.value)
             }
-            CalculatorButton.PERCENT -> {
-                _currentExpression.value = calculatorModel.calculatePercent()
-            }
             CalculatorButton.ERASE -> {
                 _currentExpression.value = calculatorModel.eraseExpression()
             }
+            CalculatorButton.PERCENT -> {
+                try {
+                    _currentExpression.value = calculatorModel.calculatePercent()
+                    _state.value = CalculatorUiState.Input
+                } catch (e: Exception) {
+                    _currentExpression.value = CalculatorModel.ERROR_MESSAGE
+                    _state.value = CalculatorUiState.Error
+                }
+            }
             CalculatorButton.EQUALITY -> {
-                _currentExpression.value = calculatorModel.calculateResult()
+                try {
+                    _currentExpression.value = calculatorModel.calculateResult()
+                    _state.value = CalculatorUiState.Input
+                } catch (e: Exception) {
+                    _currentExpression.value = CalculatorModel.ERROR_MESSAGE
+                    _state.value = CalculatorUiState.Error
+                }
             }
             else -> {
                 _currentExpression.value = calculatorModel.handleDigitClick(button.value)

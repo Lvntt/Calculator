@@ -13,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.calculator.data.ButtonsSource
 import com.example.calculator.data.CalculatorButton
-import com.example.calculator.model.CalculatorModel
+import com.example.calculator.presentation.CalculatorUiState
 import com.example.calculator.presentation.CalculatorViewModel
 import com.example.calculator.ui.theme.*
 
@@ -74,18 +74,21 @@ fun ExpressionText(
             bottom = ExpressionTextBottomPadding
         )
     ) {
-        if (viewModel.currentExpression != CalculatorModel.ERROR_MESSAGE) {
-            Text(
-                style = ExpressionDefaultTextStyle,
-                text = viewModel.currentExpression
-            )
-        } else {
-            Text(
-                style = ExpressionErrorTextStyle,
-                text = viewModel.currentExpression
-            )
+        when (viewModel.state) {
+            CalculatorUiState.Initial -> Unit
+            CalculatorUiState.Input -> {
+                Text(
+                    style = ExpressionDefaultTextStyle,
+                    text = viewModel.currentExpression
+                )
+            }
+            CalculatorUiState.Error -> {
+                Text(
+                    style = ExpressionErrorTextStyle,
+                    text = viewModel.currentExpression
+                )
+            }
         }
-
     }
 }
 

@@ -144,37 +144,30 @@ class CalculatorModel {
     }
 
     fun calculateResult(): String {
-        try {
-            val match = Regex(EXPRESSION_REGEX).find(currentExpression)
-            if (match == null) {
-                Log.d(TAG, NULL_MATCH_MESSAGE)
-                return currentExpression
-            }
-            val (leftOperand, operation, rightOperand) = match.destructured
-            val firstNumber = leftOperand.replace(COMMA, DOT).toDouble().toBigDecimal()
-            val secondNumber = rightOperand.replace(COMMA, DOT).toDouble().toBigDecimal()
-            var result: BigDecimal = BigDecimal.valueOf(0.0)
-
-            when (operation) {
-                CalculatorButton.SUBTRACTION.value -> result = firstNumber - secondNumber
-                CalculatorButton.ADDITION.value -> result = firstNumber + secondNumber
-                CalculatorButton.MULTIPLICATION.value -> result = firstNumber * secondNumber
-                CalculatorButton.DIVISION.value -> {
-                    if (secondNumber == BigDecimal.valueOf(0.0)) {
-                        currentExpression = ERROR_MESSAGE
-                        canResetExpression = true
-                        return currentExpression
-                    } else {
-                        result = firstNumber.divide(secondNumber, 9, RoundingMode.HALF_UP)
-                    }
+        val match = Regex(EXPRESSION_REGEX).find(currentExpression)
+        if (match == null) {
+            Log.d(TAG, NULL_MATCH_MESSAGE)
+            return currentExpression
+        }
+        val (leftOperand, operation, rightOperand) = match.destructured
+        val firstNumber = leftOperand.replace(COMMA, DOT).toDouble().toBigDecimal()
+        val secondNumber = rightOperand.replace(COMMA, DOT).toDouble().toBigDecimal()
+        var result: BigDecimal = BigDecimal.valueOf(0.0)
+        when (operation) {
+            CalculatorButton.SUBTRACTION.value -> result = firstNumber - secondNumber
+            CalculatorButton.ADDITION.value -> result = firstNumber + secondNumber
+            CalculatorButton.MULTIPLICATION.value -> result = firstNumber * secondNumber
+            CalculatorButton.DIVISION.value -> {
+                if (secondNumber == BigDecimal.valueOf(0.0)) {
+                    currentExpression = EMPTY_STRING
+                    throw ArithmeticException(ERROR_MESSAGE)
+                } else {
+                    result = firstNumber.divide(secondNumber, 9, RoundingMode.HALF_UP)
                 }
             }
-            currentExpression = processFractionalPart(result.toDouble())
-            canResetExpression = true
-
-        } catch (e: Exception) {
-            Log.d(TAG, e.toString())
         }
+        currentExpression = processFractionalPart(result.toDouble())
+        canResetExpression = true
 
         return currentExpression
     }
