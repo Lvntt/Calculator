@@ -4,37 +4,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 
 val TitleTextStyle = TextStyle(
-    color = OnBackground,
     fontSize = 32.sp,
     fontFamily = GoogleSans
 )
 
-val ExpressionInitialTextStyle = TextStyle(
-    color = Primary,
+val ExpressionTextStyle = TextStyle(
     fontSize = 57.sp,
     fontFamily = GoogleSans
 )
 
-val ExpressionInputTextStyle = TextStyle(
-    color = Primary,
-    fontSize = 57.sp,
-    fontFamily = GoogleSans
-)
-
-val ExpressionErrorTextStyle = TextStyle(
-    color = Error,
-    fontSize = 57.sp,
-    fontFamily = GoogleSans
-)
-
-val CalculatorButtonTextStyle = TextStyle(
-    color = OnSecondaryContainer,
-    fontSize = 28.sp,
-    fontFamily = GoogleSans
-)
-
-val AccentedButtonTextStyle = TextStyle(
-    color = OnTertiaryContainer,
-    fontSize = 28.sp,
+val ButtonTextStyle = TextStyle(
+    fontSize = 27.sp,
     fontFamily = GoogleSans
 )

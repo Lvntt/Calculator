@@ -4,14 +4,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.calculator.data.CalculatorButton
 import com.example.calculator.model.CalculatorModel
-import com.example.calculator.ui.theme.ExpressionErrorTextStyle
-import com.example.calculator.ui.theme.ExpressionInitialTextStyle
-import com.example.calculator.ui.theme.ExpressionInputTextStyle
 
 class CalculatorViewModel : ViewModel() {
 
-    private val _state =
-        mutableStateOf<CalculatorUiState>(CalculatorUiState.Initial(ExpressionInitialTextStyle))
+    private val _state = mutableStateOf<CalculatorUiState>(CalculatorUiState.Initial())
     val state: CalculatorUiState
         get() = _state.value
 
@@ -21,14 +17,13 @@ class CalculatorViewModel : ViewModel() {
 
     private fun setError() {
         currentExpression = CalculatorModel.ERROR_MESSAGE
-        _state.value =
-            CalculatorUiState.Error(ExpressionErrorTextStyle)
+        _state.value = CalculatorUiState.Error()
     }
 
     fun getButtons(): List<List<CalculatorButton>> = calculatorModel.getButtons()
 
     fun handleButtonClick(button: CalculatorButton) {
-        _state.value = CalculatorUiState.Input(ExpressionInputTextStyle, currentExpression)
+        _state.value = CalculatorUiState.Input(currentExpression)
 
         when (button) {
             CalculatorButton.ADDITION,
@@ -68,12 +63,12 @@ class CalculatorViewModel : ViewModel() {
             }
         }
 
-        _state.value = CalculatorUiState.Input(ExpressionInputTextStyle, currentExpression)
+        _state.value = CalculatorUiState.Input(currentExpression)
     }
 
     fun handleEraseIconClick() {
         currentExpression = calculatorModel.eraseSymbol()
-        _state.value = CalculatorUiState.Input(ExpressionInputTextStyle, currentExpression)
+        _state.value = CalculatorUiState.Input(currentExpression)
     }
 
     companion object {

@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -15,7 +15,6 @@ import com.example.calculator.data.CalculatorButton
 import com.example.calculator.presentation.CalculatorUiState
 import com.example.calculator.presentation.CalculatorViewModel
 import com.example.calculator.ui.theme.*
-
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel by viewModels<CalculatorViewModel>()
 
@@ -37,7 +36,7 @@ fun Calculator(
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = CalculatorHorizontalPadding),
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -56,6 +55,7 @@ fun Calculator(
 fun AppTitleText(modifier: Modifier = Modifier) {
     Row {
         Text(
+            color = MaterialTheme.colorScheme.onBackground,
             style = TitleTextStyle,
             text = stringResource(id = R.string.appName)
         )
@@ -76,19 +76,22 @@ fun ExpressionText(
         when (calculatorUiState) {
             is CalculatorUiState.Initial -> {
                 Text(
-                    style = calculatorUiState.style,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = ExpressionTextStyle,
                     text = calculatorUiState.initialExpression
                 )
             }
             is CalculatorUiState.Input -> {
                 Text(
-                    style = calculatorUiState.style,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = ExpressionTextStyle,
                     text = calculatorUiState.expression
                 )
             }
             is CalculatorUiState.Error -> {
                 Text(
-                    style = calculatorUiState.style,
+                    color = MaterialTheme.colorScheme.error,
+                    style = ExpressionTextStyle,
                     text = calculatorUiState.errorMessage
                 )
             }
@@ -114,7 +117,7 @@ fun EraseIcon(
                     .width(EraseIconWidth)
                     .height(EraseIconHeight),
                 contentDescription = null,
-                tint = OnSurface
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -123,7 +126,7 @@ fun EraseIcon(
 @Composable
 fun CalculatorDivider(modifier: Modifier = Modifier) {
     Divider(
-        color = OutlineVariant
+        color = MaterialTheme.colorScheme.outline
     )
 }
 
@@ -213,10 +216,11 @@ fun CalculatorButton(
         modifier = modifier.fillMaxSize(),
         onClick = { onClick(button) },
         shape = CalculatorButtonShape,
-        colors = ButtonDefaults.buttonColors(backgroundColor = SecondaryContainer)
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Text(
-            style = CalculatorButtonTextStyle,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            style = ButtonTextStyle,
             text = button.value
         )
     }
@@ -232,10 +236,11 @@ fun AccentedCalculatorButton(
         modifier = modifier.fillMaxSize(),
         onClick = { onClick(button) },
         shape = CalculatorButtonShape,
-        colors = ButtonDefaults.buttonColors(backgroundColor = TertiaryContainer)
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         Text(
-            style = AccentedButtonTextStyle,
+            color = MaterialTheme.colorScheme.onTertiaryContainer,
+            style = ButtonTextStyle,
             text = button.value
         )
     }
