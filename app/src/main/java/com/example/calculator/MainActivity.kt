@@ -216,7 +216,8 @@ fun CalculatorButton(
         modifier = modifier.fillMaxSize(),
         onClick = { onClick(button) },
         shape = CalculatorButtonShape,
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        contentPadding = PaddingValues(ButtonContentPadding)
     ) {
         Text(
             color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -236,7 +237,8 @@ fun AccentedCalculatorButton(
         modifier = modifier.fillMaxSize(),
         onClick = { onClick(button) },
         shape = CalculatorButtonShape,
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+        contentPadding = PaddingValues(ButtonContentPadding)
     ) {
         Text(
             color = MaterialTheme.colorScheme.onTertiaryContainer,

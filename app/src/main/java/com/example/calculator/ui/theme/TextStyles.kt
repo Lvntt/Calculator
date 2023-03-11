@@ -14,6 +14,6 @@ val ExpressionTextStyle = TextStyle(
 )
 
 val ButtonTextStyle = TextStyle(
-    fontSize = 27.sp,
+    fontSize = 28.sp,
     fontFamily = GoogleSans
 )

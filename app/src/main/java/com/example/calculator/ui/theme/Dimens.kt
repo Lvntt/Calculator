@@ -12,3 +12,4 @@ val EraseIconEndPadding = 12.dp
 val ExpressionTextTopPadding = 60.dp
 val ExpressionTextBottomPadding = 39.dp
 val CalculatorHorizontalPadding = 16.dp
+val ButtonContentPadding = 1.dp
