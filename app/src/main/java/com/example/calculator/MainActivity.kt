@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.example.calculator.data.ButtonsSource
 import com.example.calculator.data.CalculatorButton
 import com.example.calculator.presentation.CalculatorUiState
 import com.example.calculator.presentation.CalculatorViewModel
@@ -43,12 +42,12 @@ fun Calculator(
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         AppTitleText()
-        ExpressionText(viewModel = viewModel)
-        EraseIcon(viewModel = viewModel)
+        ExpressionText(viewModel.state)
+        EraseIcon(viewModel::handleEraseIconClick)
         CalculatorDivider()
         AllCalculatorButtons(
-            viewModel = viewModel,
-            buttonsGrid = ButtonsSource.buttons
+            buttonsGrid = viewModel.getButtons(),
+            viewModel::handleButtonClick
         )
     }
 }
@@ -65,7 +64,7 @@ fun AppTitleText(modifier: Modifier = Modifier) {
 
 @Composable
 fun ExpressionText(
-    viewModel: CalculatorViewModel,
+    calculatorUiState: CalculatorUiState,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -74,18 +73,23 @@ fun ExpressionText(
             bottom = ExpressionTextBottomPadding
         )
     ) {
-        when (viewModel.state) {
-            CalculatorUiState.Initial -> Unit
-            CalculatorUiState.Input -> {
+        when (calculatorUiState) {
+            is CalculatorUiState.Initial -> {
                 Text(
-                    style = ExpressionDefaultTextStyle,
-                    text = viewModel.currentExpression
+                    style = calculatorUiState.style,
+                    text = calculatorUiState.initialExpression
                 )
             }
-            CalculatorUiState.Error -> {
+            is CalculatorUiState.Input -> {
                 Text(
-                    style = ExpressionErrorTextStyle,
-                    text = viewModel.currentExpression
+                    style = calculatorUiState.style,
+                    text = calculatorUiState.expression
+                )
+            }
+            is CalculatorUiState.Error -> {
+                Text(
+                    style = calculatorUiState.style,
+                    text = calculatorUiState.errorMessage
                 )
             }
         }
@@ -94,7 +98,7 @@ fun ExpressionText(
 
 @Composable
 fun EraseIcon(
-    viewModel: CalculatorViewModel,
+    onIconClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -103,7 +107,7 @@ fun EraseIcon(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
-        IconButton(onClick = { viewModel.handleEraseIconClick() }) {
+        IconButton(onClick = onIconClick) {
             Icon(
                 painter = painterResource(id = R.drawable.erase),
                 modifier = modifier
@@ -125,15 +129,15 @@ fun CalculatorDivider(modifier: Modifier = Modifier) {
 
 @Composable
 fun AllCalculatorButtons(
-    viewModel: CalculatorViewModel,
     buttonsGrid: List<List<CalculatorButton>>,
+    onClick: (CalculatorButton) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column {
         for (row in buttonsGrid) {
             CalculatorButtonRow(
-                viewModel = viewModel,
-                buttonsRow = row
+                buttonsRow = row,
+                onClick = onClick
             )
             Spacer(modifier = modifier.height(SpacerHeight))
         }
@@ -142,8 +146,8 @@ fun AllCalculatorButtons(
 
 @Composable
 fun CalculatorButtonRow(
-    viewModel: CalculatorViewModel,
     buttonsRow: List<CalculatorButton>,
+    onClick: (CalculatorButton) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -151,36 +155,16 @@ fun CalculatorButtonRow(
     ) {
         if (buttonsRow.size == 3) {
             CalculatorButton(
-                viewModel = viewModel,
                 button = buttonsRow[0],
+                onClick = onClick,
                 modifier = modifier
                     .weight(LargeCalculatorButtonWeight)
                     .aspectRatio(LargeCalculatorButtonWeight)
             )
-
-            Spacer(modifier = modifier.weight(SpacerWeight))
-
-            CalculatorButton(
-                viewModel = viewModel,
-                button = buttonsRow[1],
-                modifier = modifier
-                    .weight(CalculatorButtonWeight)
-                    .aspectRatio(CalculatorButtonWeight)
-            )
-
-            Spacer(modifier = modifier.weight(SpacerWeight))
-
-            AccentedCalculatorButton(
-                viewModel = viewModel,
-                button = buttonsRow[2],
-                modifier = modifier
-                    .weight(CalculatorButtonWeight)
-                    .aspectRatio(CalculatorButtonWeight)
-            )
         } else {
             CalculatorButton(
-                viewModel = viewModel,
                 button = buttonsRow[0],
+                onClick = onClick,
                 modifier = modifier
                     .weight(CalculatorButtonWeight)
                     .aspectRatio(CalculatorButtonWeight)
@@ -189,45 +173,45 @@ fun CalculatorButtonRow(
             Spacer(modifier = modifier.weight(SpacerWeight))
 
             CalculatorButton(
-                viewModel = viewModel,
                 button = buttonsRow[1],
-                modifier = modifier
-                    .weight(CalculatorButtonWeight)
-                    .aspectRatio(CalculatorButtonWeight)
-            )
-
-            Spacer(modifier = modifier.weight(SpacerWeight))
-
-            CalculatorButton(
-                viewModel = viewModel,
-                button = buttonsRow[2],
-                modifier = modifier
-                    .weight(CalculatorButtonWeight)
-                    .aspectRatio(CalculatorButtonWeight)
-            )
-
-            Spacer(modifier = modifier.weight(SpacerWeight))
-
-            AccentedCalculatorButton(
-                viewModel = viewModel,
-                button = buttonsRow[3],
+                onClick = onClick,
                 modifier = modifier
                     .weight(CalculatorButtonWeight)
                     .aspectRatio(CalculatorButtonWeight)
             )
         }
+
+        Spacer(modifier = modifier.weight(SpacerWeight))
+
+        CalculatorButton(
+            button = buttonsRow[buttonsRow.lastIndex - 1],
+            onClick = onClick,
+            modifier = modifier
+                .weight(CalculatorButtonWeight)
+                .aspectRatio(CalculatorButtonWeight)
+        )
+
+        Spacer(modifier = modifier.weight(SpacerWeight))
+
+        AccentedCalculatorButton(
+            button = buttonsRow[buttonsRow.lastIndex],
+            onClick = onClick,
+            modifier = modifier
+                .weight(CalculatorButtonWeight)
+                .aspectRatio(CalculatorButtonWeight)
+        )
     }
 }
 
 @Composable
 fun CalculatorButton(
-    viewModel: CalculatorViewModel,
     button: CalculatorButton,
+    onClick: (CalculatorButton) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
         modifier = modifier.fillMaxSize(),
-        onClick = { viewModel.handleButtonClick(button) },
+        onClick = { onClick(button) },
         shape = CalculatorButtonShape,
         colors = ButtonDefaults.buttonColors(backgroundColor = SecondaryContainer)
     ) {
@@ -240,13 +224,13 @@ fun CalculatorButton(
 
 @Composable
 fun AccentedCalculatorButton(
-    viewModel: CalculatorViewModel,
     button: CalculatorButton,
+    onClick: (CalculatorButton) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
         modifier = modifier.fillMaxSize(),
-        onClick = { viewModel.handleButtonClick(button) },
+        onClick = { onClick(button) },
         shape = CalculatorButtonShape,
         colors = ButtonDefaults.buttonColors(backgroundColor = TertiaryContainer)
     ) {

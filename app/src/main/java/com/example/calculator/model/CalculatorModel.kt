@@ -1,6 +1,7 @@
 package com.example.calculator.model
 
 import android.util.Log
+import com.example.calculator.data.ButtonsSource
 import com.example.calculator.data.CalculatorButton
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -51,17 +52,26 @@ class CalculatorModel {
         }
     }
 
-    fun handleDigitClick(digit: String): String {
+    fun getButtons() = ButtonsSource.buttons
+
+    fun handleDigitClick(button: CalculatorButton): String {
+        val digit = button.value
+
         if (canResetExpression) {
             eraseExpression()
             canResetExpression = false
         }
         currentExpression += digit
+
         return currentExpression
     }
 
-    fun handlePunctuationClick(punctuationSign: String): String {
-        if (!expressionIsValid() || currentExpression.isEmpty()) return currentExpression
+    fun handlePunctuationClick(button: CalculatorButton): String {
+        val punctuationSign = button.value
+
+        if (!expressionIsValid() || currentExpression.isEmpty()) {
+            return currentExpression
+        }
 
         val lastSymbol = currentExpression.last()
 
@@ -84,8 +94,13 @@ class CalculatorModel {
         return currentExpression
     }
 
-    fun handleOperationClick(operation: String): String {
-        if (currentExpression.isEmpty()) return currentExpression
+    fun handleOperationClick(button: CalculatorButton): String {
+        val operation = button.value
+
+        if (currentExpression.isEmpty()) {
+            return currentExpression
+        }
+
         if (operationSignCanBeReplaced()) {
             val chars = currentExpression.toCharArray()
             chars[chars.lastIndex] = operation[0]
@@ -95,6 +110,7 @@ class CalculatorModel {
             currentExpression += operation
             canResetExpression = false
         }
+
         return currentExpression
     }
 
@@ -125,6 +141,7 @@ class CalculatorModel {
         } else {
             currentExpression.replaceRange(0, 0, MINUS)
         }
+
         return currentExpression
     }
 
@@ -135,6 +152,7 @@ class CalculatorModel {
         } else if (currentExpression.isNotEmpty()) {
             currentExpression = currentExpression.substring(0, currentExpression.lastIndex)
         }
+
         return currentExpression
     }
 
@@ -145,10 +163,12 @@ class CalculatorModel {
 
     fun calculateResult(): String {
         val match = Regex(EXPRESSION_REGEX).find(currentExpression)
+
         if (match == null) {
             Log.d(TAG, NULL_MATCH_MESSAGE)
             return currentExpression
         }
+
         val (leftOperand, operation, rightOperand) = match.destructured
         val firstNumber = leftOperand.replace(COMMA, DOT).toDouble().toBigDecimal()
         val secondNumber = rightOperand.replace(COMMA, DOT).toDouble().toBigDecimal()
@@ -166,6 +186,7 @@ class CalculatorModel {
                 }
             }
         }
+
         currentExpression = processFractionalPart(result.toDouble())
         canResetExpression = true
 

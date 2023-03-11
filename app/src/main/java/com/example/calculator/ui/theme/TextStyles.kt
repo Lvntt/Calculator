@@ -9,7 +9,13 @@ val TitleTextStyle = TextStyle(
     fontFamily = GoogleSans
 )
 
-val ExpressionDefaultTextStyle = TextStyle(
+val ExpressionInitialTextStyle = TextStyle(
+    color = Primary,
+    fontSize = 57.sp,
+    fontFamily = GoogleSans
+)
+
+val ExpressionInputTextStyle = TextStyle(
     color = Primary,
     fontSize = 57.sp,
     fontFamily = GoogleSans

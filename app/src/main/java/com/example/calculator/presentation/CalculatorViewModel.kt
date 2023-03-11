@@ -4,21 +4,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.calculator.data.CalculatorButton
 import com.example.calculator.model.CalculatorModel
+import com.example.calculator.ui.theme.ExpressionErrorTextStyle
+import com.example.calculator.ui.theme.ExpressionInitialTextStyle
+import com.example.calculator.ui.theme.ExpressionInputTextStyle
 
 class CalculatorViewModel : ViewModel() {
 
-    private val _state = mutableStateOf<CalculatorUiState>(CalculatorUiState.Initial)
+    private val _state =
+        mutableStateOf<CalculatorUiState>(CalculatorUiState.Initial(ExpressionInitialTextStyle))
     val state: CalculatorUiState
         get() = _state.value
 
-    private val _currentExpression = mutableStateOf(EMPTY_STRING)
-    val currentExpression: String
-        get() = _currentExpression.value
+    private var currentExpression: String = EMPTY_STRING
 
     private val calculatorModel = CalculatorModel()
 
+    private fun setError() {
+        currentExpression = CalculatorModel.ERROR_MESSAGE
+        _state.value =
+            CalculatorUiState.Error(ExpressionErrorTextStyle)
+    }
+
+    fun getButtons(): List<List<CalculatorButton>> = calculatorModel.getButtons()
+
     fun handleButtonClick(button: CalculatorButton) {
-        _state.value = CalculatorUiState.Input
+        _state.value = CalculatorUiState.Input(ExpressionInputTextStyle, currentExpression)
 
         when (button) {
             CalculatorButton.ADDITION,
@@ -26,43 +36,44 @@ class CalculatorViewModel : ViewModel() {
             CalculatorButton.MULTIPLICATION,
             CalculatorButton.DIVISION
             -> {
-                _currentExpression.value = calculatorModel.handleOperationClick(button.value)
+                currentExpression = calculatorModel.handleOperationClick(button)
             }
             CalculatorButton.PLUS_MINUS -> {
-                _currentExpression.value = calculatorModel.changeSign()
+                currentExpression = calculatorModel.changeSign()
             }
             CalculatorButton.COMMA -> {
-                _currentExpression.value = calculatorModel.handlePunctuationClick(button.value)
+                currentExpression = calculatorModel.handlePunctuationClick(button)
             }
             CalculatorButton.ERASE -> {
-                _currentExpression.value = calculatorModel.eraseExpression()
+                currentExpression = calculatorModel.eraseExpression()
             }
             CalculatorButton.PERCENT -> {
                 try {
-                    _currentExpression.value = calculatorModel.calculatePercent()
-                    _state.value = CalculatorUiState.Input
+                    currentExpression = calculatorModel.calculatePercent()
                 } catch (e: Exception) {
-                    _currentExpression.value = CalculatorModel.ERROR_MESSAGE
-                    _state.value = CalculatorUiState.Error
+                    setError()
+                    return
                 }
             }
             CalculatorButton.EQUALITY -> {
                 try {
-                    _currentExpression.value = calculatorModel.calculateResult()
-                    _state.value = CalculatorUiState.Input
+                    currentExpression = calculatorModel.calculateResult()
                 } catch (e: Exception) {
-                    _currentExpression.value = CalculatorModel.ERROR_MESSAGE
-                    _state.value = CalculatorUiState.Error
+                    setError()
+                    return
                 }
             }
             else -> {
-                _currentExpression.value = calculatorModel.handleDigitClick(button.value)
+                currentExpression = calculatorModel.handleDigitClick(button)
             }
         }
+
+        _state.value = CalculatorUiState.Input(ExpressionInputTextStyle, currentExpression)
     }
 
     fun handleEraseIconClick() {
-        _currentExpression.value = calculatorModel.eraseSymbol()
+        currentExpression = calculatorModel.eraseSymbol()
+        _state.value = CalculatorUiState.Input(ExpressionInputTextStyle, currentExpression)
     }
 
     companion object {
