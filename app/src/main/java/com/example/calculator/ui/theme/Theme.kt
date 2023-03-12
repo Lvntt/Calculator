@@ -5,6 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 private val LightColors = lightColorScheme(
@@ -89,6 +90,9 @@ fun CalculatorTheme(
         isDarkTheme -> DarkColors
         else -> LightColors
     }
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(colorScheme.background)
 
     MaterialTheme(
         colorScheme = colorScheme,

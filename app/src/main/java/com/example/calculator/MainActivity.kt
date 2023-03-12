@@ -6,11 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.calculator.data.CalculatorButton
 import com.example.calculator.presentation.CalculatorUiState
 import com.example.calculator.presentation.CalculatorViewModel
@@ -34,7 +37,7 @@ fun Calculator(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = CalculatorHorizontalPadding),
@@ -53,7 +56,7 @@ fun Calculator(
 
 @Composable
 fun AppTitleText(modifier: Modifier = Modifier) {
-    Row {
+    Row(modifier = modifier) {
         Text(
             color = MaterialTheme.colorScheme.onBackground,
             style = TitleTextStyle,
@@ -126,6 +129,7 @@ fun EraseIcon(
 @Composable
 fun CalculatorDivider(modifier: Modifier = Modifier) {
     Divider(
+        modifier = modifier.padding(10.dp),
         color = MaterialTheme.colorScheme.outline
     )
 }
@@ -136,11 +140,14 @@ fun AllCalculatorButtons(
     onClick: (CalculatorButton) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = modifier.verticalScroll(rememberScrollState())
+    ) {
         for (row in buttonsGrid) {
             CalculatorButtonRow(
                 buttonsRow = row,
-                onClick = onClick
+                onClick = onClick,
             )
             Spacer(modifier = modifier.height(SpacerHeight))
         }
@@ -154,7 +161,7 @@ fun CalculatorButtonRow(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
     ) {
         if (buttonsRow.size == 3) {
             CalculatorButton(
