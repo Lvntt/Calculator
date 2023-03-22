@@ -3,6 +3,7 @@ package com.example.calculator.presentation
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.calculator.data.CalculatorButton
+import com.example.calculator.data.Constants.ERROR_MESSAGE
 import com.example.calculator.model.CalculatorModel
 
 class CalculatorViewModel : ViewModel() {
@@ -14,11 +15,6 @@ class CalculatorViewModel : ViewModel() {
     private var currentExpression: String = EMPTY_STRING
 
     private val calculatorModel = CalculatorModel()
-
-    private fun setError() {
-        currentExpression = CalculatorModel.ERROR_MESSAGE
-        _state.value = CalculatorUiState.Error()
-    }
 
     fun getButtons(): List<List<CalculatorButton>> = calculatorModel.getButtons()
 
@@ -69,6 +65,11 @@ class CalculatorViewModel : ViewModel() {
     fun handleEraseIconClick() {
         currentExpression = calculatorModel.eraseSymbol()
         _state.value = CalculatorUiState.Input(currentExpression)
+    }
+
+    private fun setError() {
+        currentExpression = ERROR_MESSAGE
+        _state.value = CalculatorUiState.Error()
     }
 
     companion object {

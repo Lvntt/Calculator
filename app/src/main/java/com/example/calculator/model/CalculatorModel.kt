@@ -3,54 +3,21 @@ package com.example.calculator.model
 import android.util.Log
 import com.example.calculator.data.ButtonsSource
 import com.example.calculator.data.CalculatorButton
+import com.example.calculator.data.Constants.ERROR_MESSAGE
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 class CalculatorModel {
 
     private var currentExpression = EMPTY_STRING
-
     private var canResetExpression = false
+
     private val operationSigns = listOf(
         CalculatorButton.ADDITION.value[0],
         CalculatorButton.SUBTRACTION.value[0],
         CalculatorButton.DIVISION.value[0],
         CalculatorButton.MULTIPLICATION.value[0]
     )
-
-    private fun expressionIsValid(): Boolean {
-        return currentExpression.isNotEmpty() && currentExpression != ERROR_MESSAGE
-    }
-
-    private fun expressionCanBeCalculated(): Boolean = currentExpression.contains(
-        Regex(
-            OPERATIONS_GROUP
-        )
-    )
-
-    private fun operationSignCanBeReplaced(): Boolean {
-        val lastSymbol = currentExpression.last()
-        return expressionIsValid() && currentExpression.lastIndex != 0 && lastSymbol in operationSigns
-    }
-
-    private fun operationSignCanBeInserted(): Boolean {
-        val lastSymbol = currentExpression.last()
-        return expressionIsValid() && !expressionHasOperationSigns() && lastSymbol != COMMA[0] && lastSymbol !in operationSigns
-    }
-
-    // using substring(1) to ignore possible minus prefix
-    private fun expressionHasOperationSigns(): Boolean {
-        return currentExpression.substring(1).any { it in operationSigns }
-    }
-
-    // discards the fractional part if it equals 0
-    private fun processFractionalPart(number: Double): String {
-        return if (BigDecimal.valueOf(number) % (BigDecimal.valueOf(1.0)) == BigDecimal.valueOf(0.0)) {
-            number.toInt().toString().replace(DOT, COMMA)
-        } else {
-            number.toString().replace(DOT, COMMA)
-        }
-    }
 
     fun getButtons() = ButtonsSource.buttons
 
@@ -193,21 +160,54 @@ class CalculatorModel {
         return currentExpression
     }
 
-    companion object {
-        private const val TAG = "CALCULATOR"
-        private const val NULL_MATCH_MESSAGE = "Regex match is null"
-        private const val NUMBER = "\\d+"
-        private const val OPTIONAL_MINUS = "-?"
-        private const val OPTIONAL_FRACTIONAL_PART = "(?:[,.]$NUMBER)?"
-        private const val FIRST_OPERAND_GROUP = "($OPTIONAL_MINUS$NUMBER$OPTIONAL_FRACTIONAL_PART)"
-        private const val SECOND_OPERAND_GROUP = "($OPTIONAL_MINUS$NUMBER$OPTIONAL_FRACTIONAL_PART)"
-        private const val OPERATIONS_GROUP = "([-+×÷])"
-        private const val EXPRESSION_REGEX =
+    private fun expressionIsValid(): Boolean {
+        return currentExpression.isNotEmpty() && currentExpression != ERROR_MESSAGE
+    }
+
+    // using substring(1) to ignore possible minus prefix
+    private fun expressionHasOperationSigns(): Boolean {
+        return currentExpression.substring(1).any { it in operationSigns }
+    }
+
+    private fun operationSignCanBeReplaced(): Boolean {
+        val lastSymbol = currentExpression.last()
+        return expressionIsValid() && currentExpression.lastIndex != 0 && lastSymbol in operationSigns
+    }
+
+    private fun operationSignCanBeInserted(): Boolean {
+        val lastSymbol = currentExpression.last()
+        return expressionIsValid() && !expressionHasOperationSigns() && lastSymbol != COMMA[0] && lastSymbol !in operationSigns
+    }
+
+    private fun expressionCanBeCalculated(): Boolean = currentExpression.contains(
+        Regex(
+            OPERATIONS_GROUP
+        )
+    )
+
+    // discards the fractional part if it equals 0
+    private fun processFractionalPart(number: Double): String {
+        return if (BigDecimal.valueOf(number) % (BigDecimal.valueOf(1.0)) == BigDecimal.valueOf(0.0)) {
+            number.toInt().toString().replace(DOT, COMMA)
+        } else {
+            number.toString().replace(DOT, COMMA)
+        }
+    }
+
+    private companion object {
+        const val TAG = "CALCULATOR"
+        const val NULL_MATCH_MESSAGE = "Regex match is null"
+        const val NUMBER = "\\d+"
+        const val OPTIONAL_MINUS = "-?"
+        const val OPTIONAL_FRACTIONAL_PART = "(?:[,.]$NUMBER)?"
+        const val FIRST_OPERAND_GROUP = "($OPTIONAL_MINUS$NUMBER$OPTIONAL_FRACTIONAL_PART)"
+        const val SECOND_OPERAND_GROUP = "($OPTIONAL_MINUS$NUMBER$OPTIONAL_FRACTIONAL_PART)"
+        const val OPERATIONS_GROUP = "([-+×÷])"
+        const val EXPRESSION_REGEX =
             "$FIRST_OPERAND_GROUP$OPERATIONS_GROUP$SECOND_OPERAND_GROUP"
-        private const val EMPTY_STRING = ""
-        private const val MINUS = "-"
-        private const val COMMA = ","
-        private const val DOT = "."
-        const val ERROR_MESSAGE = "Error"
+        const val EMPTY_STRING = ""
+        const val MINUS = "-"
+        const val COMMA = ","
+        const val DOT = "."
     }
 }

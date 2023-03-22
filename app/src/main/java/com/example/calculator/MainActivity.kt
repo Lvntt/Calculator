@@ -18,6 +18,7 @@ import com.example.calculator.data.CalculatorButton
 import com.example.calculator.presentation.CalculatorUiState
 import com.example.calculator.presentation.CalculatorViewModel
 import com.example.calculator.ui.theme.*
+
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel by viewModels<CalculatorViewModel>()
 
@@ -48,21 +49,19 @@ fun Calculator(
         EraseIcon(viewModel::handleEraseIconClick)
         CalculatorDivider()
         AllCalculatorButtons(
-            buttonsGrid = viewModel.getButtons(),
+            viewModel.getButtons(),
             viewModel::handleButtonClick
         )
     }
 }
 
 @Composable
-fun AppTitleText(modifier: Modifier = Modifier) {
-    Row(modifier = modifier) {
-        Text(
-            color = MaterialTheme.colorScheme.onBackground,
-            style = TitleTextStyle,
-            text = stringResource(id = R.string.appName)
-        )
-    }
+fun AppTitleText() {
+    Text(
+        color = MaterialTheme.colorScheme.onBackground,
+        style = TitleTextStyle,
+        text = stringResource(id = R.string.appName)
+    )
 }
 
 @Composable
