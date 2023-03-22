@@ -1,117 +1,255 @@
 package com.example.calculator
 
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import com.example.calculator.databinding.ActivityMainBinding
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.example.calculator.data.CalculatorButton
+import com.example.calculator.presentation.CalculatorUiState
+import com.example.calculator.presentation.CalculatorViewModel
+import com.example.calculator.ui.theme.*
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
-    private val calculator = Calculator()
+class MainActivity : ComponentActivity() {
+    private val calculatorViewModel by viewModels<CalculatorViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        window.navigationBarColor = getColor(R.color.black)
-        setupOnClickListeners()
+        setContent {
+            CalculatorTheme {
+                Calculator(calculatorViewModel)
+            }
+        }
     }
+}
 
-    private fun updateUi() {
-        val currentExpression = calculator.getCurrentExpression()
+@Composable
+fun Calculator(
+    viewModel: CalculatorViewModel,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = CalculatorHorizontalPadding),
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        AppTitleText()
+        ExpressionText(viewModel.state)
+        EraseIcon(viewModel::handleEraseIconClick)
+        CalculatorDivider()
+        AllCalculatorButtons(
+            viewModel.getButtons(),
+            viewModel::handleButtonClick
+        )
+    }
+}
 
-        if (currentExpression != Calculator.ERROR_MESSAGE) {
-            binding.expression.visibility = View.VISIBLE
-            binding.error.visibility = View.GONE
-            binding.expression.text = currentExpression
+@Composable
+fun AppTitleText() {
+    Text(
+        color = MaterialTheme.colorScheme.onBackground,
+        style = TitleTextStyle,
+        text = stringResource(id = R.string.appName)
+    )
+}
+
+@Composable
+fun ExpressionText(
+    calculatorUiState: CalculatorUiState,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.padding(
+            top = ExpressionTextTopPadding,
+            bottom = ExpressionTextBottomPadding
+        )
+    ) {
+        when (calculatorUiState) {
+            is CalculatorUiState.Initial -> {
+                Text(
+                    color = MaterialTheme.colorScheme.primary,
+                    style = ExpressionTextStyle,
+                    text = calculatorUiState.initialExpression
+                )
+            }
+            is CalculatorUiState.Input -> {
+                Text(
+                    color = MaterialTheme.colorScheme.primary,
+                    style = ExpressionTextStyle,
+                    text = calculatorUiState.expression
+                )
+            }
+            is CalculatorUiState.Error -> {
+                Text(
+                    color = MaterialTheme.colorScheme.error,
+                    style = ExpressionTextStyle,
+                    text = calculatorUiState.errorMessage
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun EraseIcon(
+    onIconClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .padding(end = EraseIconEndPadding)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        IconButton(onClick = onIconClick) {
+            Icon(
+                painter = painterResource(id = R.drawable.erase),
+                modifier = modifier
+                    .width(EraseIconWidth)
+                    .height(EraseIconHeight),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+fun CalculatorDivider(modifier: Modifier = Modifier) {
+    Divider(
+        modifier = modifier.padding(10.dp),
+        color = MaterialTheme.colorScheme.outline
+    )
+}
+
+@Composable
+fun AllCalculatorButtons(
+    buttonsGrid: List<List<CalculatorButton>>,
+    onClick: (CalculatorButton) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = modifier.verticalScroll(rememberScrollState())
+    ) {
+        for (row in buttonsGrid) {
+            CalculatorButtonRow(
+                buttonsRow = row,
+                onClick = onClick,
+            )
+            Spacer(modifier = modifier.height(SpacerHeight))
+        }
+    }
+}
+
+@Composable
+fun CalculatorButtonRow(
+    buttonsRow: List<CalculatorButton>,
+    onClick: (CalculatorButton) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        if (buttonsRow.size == 3) {
+            CalculatorButton(
+                button = buttonsRow[0],
+                onClick = onClick,
+                modifier = modifier
+                    .weight(LargeCalculatorButtonWeight)
+                    .aspectRatio(LargeCalculatorButtonWeight)
+            )
         } else {
-            binding.expression.visibility = View.GONE
-            binding.error.visibility = View.VISIBLE
-        }
-    }
+            CalculatorButton(
+                button = buttonsRow[0],
+                onClick = onClick,
+                modifier = modifier
+                    .weight(CalculatorButtonWeight)
+                    .aspectRatio(CalculatorButtonWeight)
+            )
 
-    private fun setupOnClickListeners() {
-        binding.zeroDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.zeroDigitButton.text.toString())
-            updateUi()
+            Spacer(modifier = modifier.weight(SpacerWeight))
+
+            CalculatorButton(
+                button = buttonsRow[1],
+                onClick = onClick,
+                modifier = modifier
+                    .weight(CalculatorButtonWeight)
+                    .aspectRatio(CalculatorButtonWeight)
+            )
         }
-        binding.oneDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.oneDigitButton.text.toString())
-            updateUi()
-        }
-        binding.twoDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.twoDigitButton.text.toString())
-            updateUi()
-        }
-        binding.threeDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.threeDigitButton.text.toString())
-            updateUi()
-        }
-        binding.fourDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.fourDigitButton.text.toString())
-            updateUi()
-        }
-        binding.fiveDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.fiveDigitButton.text.toString())
-            updateUi()
-        }
-        binding.sixDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.sixDigitButton.text.toString())
-            updateUi()
-        }
-        binding.sevenDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.sevenDigitButton.text.toString())
-            updateUi()
-        }
-        binding.eightDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.eightDigitButton.text.toString())
-            updateUi()
-        }
-        binding.nineDigitButton.setOnClickListener {
-            calculator.handleDigitClick(binding.nineDigitButton.text.toString())
-            updateUi()
-        }
-        binding.commaButton.setOnClickListener {
-            calculator.handlePunctuationClick(binding.commaButton.text.toString())
-            updateUi()
-        }
-        binding.sumButton.setOnClickListener {
-            calculator.handleOperationClick(binding.sumButton.text.toString())
-            updateUi()
-        }
-        binding.subtractionButton.setOnClickListener {
-            calculator.handleOperationClick(binding.subtractionButton.text.toString())
-            updateUi()
-        }
-        binding.multiplicationButton.setOnClickListener {
-            calculator.handleOperationClick(binding.multiplicationButton.text.toString())
-            updateUi()
-        }
-        binding.divisionButton.setOnClickListener {
-            calculator.handleOperationClick(binding.divisionButton.text.toString())
-            updateUi()
-        }
-        binding.changeSignButton.setOnClickListener {
-            calculator.changeSign()
-            updateUi()
-        }
-        binding.eraseButton.setOnClickListener {
-            calculator.handleEraseButton()
-            updateUi()
-        }
-        binding.eraseExpressionButton.setOnClickListener {
-            calculator.eraseExpression()
-            updateUi()
-        }
-        binding.percentButton.setOnClickListener {
-            calculator.calculatePercent()
-            updateUi()
-        }
-        binding.equalButton.setOnClickListener {
-            calculator.calculateResult()
-            updateUi()
-        }
+
+        Spacer(modifier = modifier.weight(SpacerWeight))
+
+        CalculatorButton(
+            button = buttonsRow[buttonsRow.lastIndex - 1],
+            onClick = onClick,
+            modifier = modifier
+                .weight(CalculatorButtonWeight)
+                .aspectRatio(CalculatorButtonWeight)
+        )
+
+        Spacer(modifier = modifier.weight(SpacerWeight))
+
+        AccentedCalculatorButton(
+            button = buttonsRow[buttonsRow.lastIndex],
+            onClick = onClick,
+            modifier = modifier
+                .weight(CalculatorButtonWeight)
+                .aspectRatio(CalculatorButtonWeight)
+        )
+    }
+}
+
+@Composable
+fun CalculatorButton(
+    button: CalculatorButton,
+    onClick: (CalculatorButton) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        modifier = modifier.fillMaxSize(),
+        onClick = { onClick(button) },
+        shape = CalculatorButtonShape,
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        contentPadding = PaddingValues(ButtonContentPadding)
+    ) {
+        Text(
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            style = ButtonTextStyle,
+            text = button.value
+        )
+    }
+}
+
+@Composable
+fun AccentedCalculatorButton(
+    button: CalculatorButton,
+    onClick: (CalculatorButton) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        modifier = modifier.fillMaxSize(),
+        onClick = { onClick(button) },
+        shape = CalculatorButtonShape,
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+        contentPadding = PaddingValues(ButtonContentPadding)
+    ) {
+        Text(
+            color = MaterialTheme.colorScheme.onTertiaryContainer,
+            style = ButtonTextStyle,
+            text = button.value
+        )
     }
 }
